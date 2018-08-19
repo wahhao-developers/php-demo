@@ -1,0 +1,33 @@
+php_value max_input_vars 2000
+php_value memory_limit 256M
+php_value post_max_size 64M
+php_value upload_max_filesize 64M
+
+#RewriteEngine On
+#RewriteCond %{HTTP:X-Forwarded-Proto} =http
+#RewriteRule .* https://%{HTTP:Host}%{REQUEST_URI} [L,R=permanent]
+
+RewriteEngine On
+RewriteBase /
+RewriteCond %{REQUEST_URI} ^corepool.*
+RewriteRule ^(.*)$ /index.php/$1 [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php/$1 [L]
+
+Authtype Basic
+AuthName "apache"
+AuthUserFile /var/app/current/.htpasswd
+Require valid-user
+SetEnvIf Request_URI ^/healthcheck.html allow
+# Setup a deny/allow
+Order Deny,Allow
+# Deny from everyone
+Deny from all
+# except if either of these are satisfied
+Satisfy any
+# 1. a valid authenticated user
+Require valid-user
+# or 2. the "allow" var is set
+Allow from env=allow
+#Allow from env=REDIRECT_noauth
