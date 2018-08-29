@@ -1,4 +1,5 @@
- ls -A  /var/www/html/db/ |grep *.sql 2> /dev/null
+#!/bin/bash
+ls -A  /var/www/html/db/ |grep *.sql 2> /dev/null
 
 if [ $? -eq 0 ]
 then
